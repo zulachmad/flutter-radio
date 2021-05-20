@@ -1,12 +1,11 @@
-import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter_radio/flutter_radio.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:dio/dio.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() => runApp(MyApp());
 
@@ -41,6 +40,19 @@ class _MyAppState extends State<MyApp> {
   Future<void> audioStart() async {
     await FlutterRadio.audioStart();
     print('Audio Start OK');
+  }
+
+  _launchInBrowser() async {
+    var url = 'https://t.me/flutter_id';
+    if (await canLaunch(url)) {
+      await launch(
+        url,
+        forceSafariVC: false,
+        forceWebView: false,
+      );
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   Widget _tab(List<Widget> children) {
@@ -208,10 +220,15 @@ class _MyAppState extends State<MyApp> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text(
-                      'Siaran Ulang / Siaran Langsung',
-                      style: TextStyle(color: Colors.white.withOpacity(0.7)),
+                    CircleAvatar(
+                      backgroundColor: Colors.red,
+                      radius: 5,
                     ),
+                    Padding(
+                        padding: EdgeInsets.only(right: 220),
+                        child: Text('Live',
+                            style:
+                                TextStyle(fontSize: 18, color: Colors.white))),
                     Text('Pendengan : 100',
                         style: TextStyle(color: Colors.white.withOpacity(0.7)))
                   ],
@@ -254,17 +271,23 @@ class _MyAppState extends State<MyApp> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Icon(
-                    Icons.home,
-                    color: Colors.white,
+                  IconButton(
+                    icon: Icon(
+                      Icons.share,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      _launchInBrowser();
+                    },
                   ),
-                  Icon(
-                    Icons.share,
-                    color: Colors.white,
-                  ),
-                  Icon(
-                    Icons.airplanemode_on,
-                    color: Colors.white,
+                  IconButton(
+                    icon: Icon(
+                      Icons.airplanemode_active,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      _launchInBrowser();
+                    },
                   ),
                   IconButton(
                     icon: Icon(
