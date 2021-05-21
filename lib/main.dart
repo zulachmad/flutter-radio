@@ -255,7 +255,7 @@ class _MyAppState extends State<MyApp> {
                     backgroundColor: Colors.white,
                     radius: 30,
                     child: IconButton(
-                        iconSize: 50,
+                        iconSize: 35,
                         padding: new EdgeInsets.all(0),
                         icon: isPlaying
                             ? Icon(Icons.pause)
