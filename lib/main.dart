@@ -22,6 +22,8 @@ class _MyAppState extends State<MyApp> {
   var title = "Title";
   var artist = "Artist";
   var text;
+  bool isLive;
+  var listeners;
   static const streamUrl = "https://a1.siar.us:8100/radio.mp3";
   Duration _duration = new Duration();
   Duration _position = new Duration();
@@ -107,10 +109,6 @@ class _MyAppState extends State<MyApp> {
 
   fetchData() async {
     final String _url = "https://a1.siar.us/api/nowplaying/salafytual";
-    _setHeaders() => {
-          "Content-type": "application/json",
-          "Accept": "application/json",
-        };
     try {
       Dio dio = new Dio(BaseOptions(
         validateStatus: (_) => true,
@@ -123,6 +121,8 @@ class _MyAppState extends State<MyApp> {
           artist = body['now_playing']['song']['artist'];
           title = body['now_playing']['song']['title'];
           text = body['now_playing']['song']['text'];
+          isLive = body['live']['is_live'];
+          listeners = body['listeners']['total'] as String;
         });
       } else {
         print(response.statusCode);
@@ -136,7 +136,6 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Music player screen',
         debugShowCheckedModeBanner: false,
         home: new Scaffold(
           backgroundColor: blueColor,
@@ -179,7 +178,7 @@ class _MyAppState extends State<MyApp> {
                                     style: TextStyle(
                                         fontSize: 18, color: Colors.white),
                                   ),
-                                  Text('Radio anti Terorisme',
+                                  Text('Radio Islam Kota Tual',
                                       style: TextStyle(
                                           color:
                                               Colors.white.withOpacity(0.6))),
@@ -199,7 +198,7 @@ class _MyAppState extends State<MyApp> {
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18.0)),
                           SizedBox(
-                            height: 6.0,
+                            height: 10.0,
                           ),
                           Text(
                             artist,
@@ -220,27 +219,41 @@ class _MyAppState extends State<MyApp> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    CircleAvatar(
-                      backgroundColor: Colors.red,
-                      radius: 5,
-                    ),
+                    isLive == true
+                        ? CircleAvatar(
+                            backgroundColor: Colors.red,
+                            radius: 5,
+                          )
+                        : CircleAvatar(
+                            backgroundColor: Colors.grey,
+                            radius: 5,
+                          ),
+                    isLive == true
+                        ? Padding(
+                            padding: EdgeInsets.only(right: 210),
+                            child: Text('Live',
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.white)))
+                        : Padding(
+                            padding: EdgeInsets.only(right: 210),
+                            child: Text('Rekaman',
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.white))),
                     Padding(
-                        padding: EdgeInsets.only(right: 220),
-                        child: Text('Live',
+                        padding: EdgeInsets.only(left: 0),
+                        child: Text('Pendengar : $listeners',
                             style:
-                                TextStyle(fontSize: 18, color: Colors.white))),
-                    Text('Pendengan : 100',
-                        style: TextStyle(color: Colors.white.withOpacity(0.7)))
+                                TextStyle(fontSize: 12, color: Colors.white))),
                   ],
                 ),
               ),
-              Spacer(),
+              SizedBox(height: 70.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   CircleAvatar(
                     backgroundColor: Colors.white,
-                    radius: 50,
+                    radius: 30,
                     child: IconButton(
                         iconSize: 50,
                         padding: new EdgeInsets.all(0),
@@ -267,7 +280,7 @@ class _MyAppState extends State<MyApp> {
                   )
                 ],
               ),
-              Spacer(),
+              SizedBox(height: 90.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
